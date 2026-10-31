@@ -6,6 +6,9 @@ const dbProvider = process.env.DB_PROVIDER || 'sqlite';
 if (!['sqlite', 'sqlserver'].includes(dbProvider)) {
   throw new Error('Configuração inválida: DB_PROVIDER deve ser "sqlite" ou "sqlserver".');
 }
+if (process.env.APP_ENV === 'production' && dbProvider === 'sqlite') {
+  throw new Error('Configuração inválida: DB_PROVIDER deve ser "sqlserver" quando APP_ENV=production.');
+}
 
 const port = process.env.PORT ? Number(process.env.PORT) : 3000;
 if (!Number.isInteger(port) || port < 1 || port > 65535) {
