@@ -356,14 +356,25 @@ O Portal cria o App Service; a publicação usa um único fluxo: ZIP pelo Cloud 
    ```
 
 2. Confirme que `git status --short` está vazio e que o commit contém o diff revisado. Se a revisão ainda estiver somente no computador local, não continue: publique a branch aprovada primeiro ou use um fork controlado pelo aluno.
-3. Crie ZIP sem `.env`, `node_modules`, dados locais ou arquivos de segredo:
+3. Habilite o build automatizado do Oryx antes do deploy, para que o App Service instale as dependências de produção do projeto:
+
+   ```bash
+   az webapp config appsettings set \
+     --resource-group "[definir: grupo de recursos]" \
+     --name "[definir: nome do App Service]" \
+     --settings SCM_DO_BUILD_DURING_DEPLOYMENT=true
+   ```
+
+   A mensagem `Could not find build manifest file at '/home/site/wwwroot/oryx-manifest.toml'` pode indicar que o build Oryx não foi executado. O deploy ZIP concluir com sucesso confirma o envio/publicação do arquivo, não que as dependências foram instaladas nem que a aplicação iniciou.
+4. Crie ZIP sem `.env`, `node_modules`, dados locais ou arquivos de segredo:
 
    ```bash
    zip -r ../azureshop.zip . \
      -x 'node_modules/*' '.env' '.env.*' 'data/*' '*.tfstate*' '*.tfvars' 'infra/k8s/secret.yaml'
    ```
 
-4. Publique o ZIP:
+   Confirme que `package.json`, `package-lock.json`, `src/` e `public/` estão na raiz do ZIP (não dentro de uma pasta adicional) antes de publicar.
+5. Publique o ZIP:
 
    ```bash
    az webapp deploy \
@@ -373,15 +384,15 @@ O Portal cria o App Service; a publicação usa um único fluxo: ZIP pelo Cloud 
      --src-path ../azureshop.zip
    ```
 
-5. Aguarde o retorno de `az webapp deploy`. No Portal, abra **Log stream** e **Configuration**. Confirme que nenhuma senha foi enviada.
-6. Valide no navegador ou Cloud Shell:
+6. Aguarde o retorno de `az webapp deploy`. No Portal, abra **Log stream** e **Configuration**. Confirme que nenhuma senha foi enviada e que os logs indicam a execução do build Oryx e a instalação das dependências.
+7. Valide no navegador ou Cloud Shell:
 
    ```bash
    curl -fsS "https://[definir: default-domain]/api/health"
    curl -fsS "https://[definir: default-domain]/api/products"
    ```
 
-7. No navegador, abra o catálogo, adicione item ao carrinho e avance no checkout. Enquanto `DB_PROVIDER=sqlite`, pedidos usam o SQLite persistido no diretório configurado do App Service, o que não é uma estratégia durável para produção. A migração para Azure SQL é tratada somente no Lab 6.
+8. No navegador, abra o catálogo, adicione item ao carrinho e avance no checkout. Enquanto `DB_PROVIDER=sqlite`, pedidos usam o SQLite persistido no diretório configurado do App Service, o que não é uma estratégia durável para produção. A migração para Azure SQL é tratada somente no Lab 6.
 
 **Resultado esperado:** health retorna `status: ok`, catálogo responde e UI funciona.
 
