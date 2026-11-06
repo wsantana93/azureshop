@@ -1,7 +1,7 @@
 locals {
   tags = {
-    project       = "azureshop"
-    company      = "highexpert"
+    project = "azureshop"
+    company = "highexpert"
     managed = "terraform"
   }
 
@@ -51,7 +51,7 @@ module "container_registry" {
   source              = "./modules/container-registry"
   count               = var.deploy_acr ? 1 : 0
   resource_group_name = data.azurerm_resource_group.portal.name
-  location            = data.azurerm_resource_group.portal.location
+  location            = var.location
   tags                = local.tags
   acr_name            = local.acr_name
   sku                 = var.acr_sku
@@ -61,7 +61,7 @@ module "aks" {
   source              = "./modules/aks"
   count               = var.deploy_aks ? 1 : 0
   resource_group_name = data.azurerm_resource_group.portal.name
-  location            = data.azurerm_resource_group.portal.location
+  location            = var.location
   tags                = local.tags
   aks_name            = local.aks_name
   node_count          = var.aks_node_count
@@ -123,7 +123,7 @@ resource "azurerm_network_security_rule" "aks_to_sql" {
   source_port_range           = "*"
   destination_port_range      = "1433"
   source_address_prefixes     = var.aks_vnet_address_prefixes
-  destination_address_prefix  = data.azurerm_subnet.portal_data.address_prefixes[0]
+  destination_address_prefix  = var.portal_data_subnet_prefix
   resource_group_name         = data.azurerm_network_security_group.portal_data.resource_group_name
   network_security_group_name = data.azurerm_network_security_group.portal_data.name
 

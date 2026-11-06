@@ -547,10 +547,11 @@ O Dia 2 usa o **Modelo A**:
 
    | Variável | Origem |
    |---|---|
-   | `resource_group_name`, `suffix` | Resource Group manual e identificador exclusivo do aluno |
-   | `portal_vnet_name`, `portal_data_nsg_name`, `portal_data_subnet_name` | Lab 2 |
+   | `location`, `resource_group_name`, `suffix` | Regiao e Resource Group manual; sufixo exclusivo do aluno |
+   | `portal_vnet_name`, `portal_data_nsg_name`, `portal_data_subnet_name`, `portal_data_subnet_prefix` | Lab 2 |
+   | `portal_app_service_name` | Lab 5 |
    | `portal_sql_server_name`, `portal_sql_database_name` | Lab 6 |
-   | `portal_sql_private_dns_zone_name` | Lab 7 |
+   | `portal_sql_private_endpoint_name`, `portal_sql_private_dns_zone_name` | Lab 7 |
 
    Nunca coloque senha de VM/SQL em `terraform.tfvars`.
 

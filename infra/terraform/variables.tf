@@ -4,6 +4,11 @@ variable "subscription_id" {
   default     = ""
 }
 
+variable "location" {
+  description = "Regiao usada para criar os recursos novos, correspondente a regiao do Resource Group existente."
+  type        = string
+}
+
 variable "resource_group_name" {
   description = "RG criado manualmente no Portal no Dia 1 e consumido por data sources no Dia 2."
   type        = string
@@ -34,6 +39,16 @@ variable "portal_data_subnet_name" {
   type        = string
 }
 
+variable "portal_data_subnet_prefix" {
+  description = "Prefixo IPv4 da subnet de dados criada manualmente no Portal."
+  type        = string
+}
+
+variable "portal_app_service_name" {
+  description = "Nome do App Service criado manualmente no Portal."
+  type        = string
+}
+
 variable "portal_sql_server_name" {
   description = "Nome do servidor logico Azure SQL criado pelo Portal no Dia 1."
   type        = string
@@ -41,6 +56,11 @@ variable "portal_sql_server_name" {
 
 variable "portal_sql_database_name" {
   description = "Nome do banco Azure SQL criado pelo Portal no Dia 1."
+  type        = string
+}
+
+variable "portal_sql_private_endpoint_name" {
+  description = "Nome do Private Endpoint SQL criado manualmente no Portal."
   type        = string
 }
 
@@ -83,7 +103,7 @@ variable "aks_node_count" {
 variable "aks_node_size" {
   description = "Tamanho do pool inicial do AKS."
   type        = string
-  default     = "Standard_B4ms"
+  default     = "Standard_D2s_v5"
 }
 
 variable "aks_node_resource_group" {
